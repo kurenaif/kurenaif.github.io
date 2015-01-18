@@ -9,6 +9,10 @@
         $("img").hide()
       };
 
+      $(function() {
+        $("span#test").on("click", "div", function(){alert("click!");});
+      });
+
       $(function () {
         var str = $("div").text();
         alert(str);
@@ -30,6 +34,6 @@
   <body>
     <img src="images/sprite_download.png" height="140" width="180" alt="">
     <img src="images/sprite_download.png" height="140" width="180" alt="">
-    <div>div要素のテキスト</div>
+    <span id="test"> <div>div要素のテキスト</div> </span>
   </body>
 </html>
