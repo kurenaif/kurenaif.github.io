@@ -1,1 +1,35 @@
-Hello World!!
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="javascripts/jquery.js"></script>
+    <script type="text/javascript">
+
+      function Callback(){
+        $("div").text("click!");
+        $("img").hide()
+      };
+
+      $(function () {
+        var str = $("div").text();
+        alert(str);
+        $("div").click(Callback);
+      });
+    </script>
+    <style type="text/css">
+    <!--
+      div{
+        width:50px;
+        height:50px;
+        color:#fff;
+        background-color: #09C;
+      }
+    -->
+    </style>
+  </head>
+
+  <body>
+    <img src="images/sprite_download.png" height="140" width="180" alt="">
+    <img src="images/sprite_download.png" height="140" width="180" alt="">
+    <div>div要素のテキスト</div>
+  </body>
+</html>
