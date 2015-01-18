@@ -11,13 +11,19 @@
 
       $(function() {
         $("span#test").on("click", "div", function(){alert("click!");});
-      });
-
-      $(function () {
         var str = $("div").text();
         alert(str);
         $("div").click(Callback);
+
+        $("div").hover(
+          function (){
+            $("div").css("background-color", "#FC6");
+          },
+          function(){
+            $("div").css("background-color", "#09C");
+          });
       });
+
     </script>
     <style type="text/css">
     <!--
@@ -26,6 +32,7 @@
         height:50px;
         color:#fff;
         background-color: #09C;
+        cursor:pointer;
       }
     -->
     </style>
@@ -34,6 +41,7 @@
   <body>
     <img src="images/sprite_download.png" height="140" width="180" alt="">
     <img src="images/sprite_download.png" height="140" width="180" alt="">
-    <span id="test"> <div>div要素のテキスト</div> </span>
+    <span id="test"> <div>div要素のテキスト</div> </span> <br>
+    <div> 意味が無い </div>
   </body>
 </html>
