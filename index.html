@@ -1,47 +1,26 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="javascripts/jquery.js"></script>
-    <script type="text/javascript">
-
-      function Callback(){
-        $("div").text("click!");
-        $("img").hide()
-      };
-
-      $(function() {
-        $("span#test").on("click", "div", function(){alert("click!");});
-        var str = $("div").text();
-        alert(str);
-        $("div").click(Callback);
-
-        $("div").hover(
-          function (){
-            $("div").css("background-color", "#FC6");
-          },
-          function(){
-            $("div").css("background-color", "#09C");
-          });
-      });
-
-    </script>
-    <style type="text/css">
-    <!--
-      div{
-        width:50px;
-        height:50px;
-        color:#fff;
-        background-color: #09C;
-        cursor:pointer;
-      }
-    -->
-    </style>
-  </head>
-
-  <body>
-    <img src="images/sprite_download.png" height="140" width="180" alt="">
-    <img src="images/sprite_download.png" height="140" width="180" alt="">
-    <span id="test"> <div>div要素のテキスト</div> </span> <br>
-    <div> 意味が無い </div>
-  </body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="./javascripts/jquery.js"></script>
+		<script type="text/javascript">
+			$(function () {	
+				$("button").click(function(){
+					$("div").toggle(3000);
+				});
+			});
+		</script>
+		<style type="text/css">
+		<!--
+			div{
+				width:200px;
+				height:100px;
+				background-color:#F90;
+			}
+		-->
+		</style>
+	</head>
+	<body>
+		<button>click me</button>
+		<div>表示/非表示のサンプル</div>
+	</body>
 </html>
