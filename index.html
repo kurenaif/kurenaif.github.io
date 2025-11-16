@@ -1,45 +1,796 @@
 <!DOCTYPE html>
-
-<html lang="ja" prefix="og: http://ogp.me/ns#">
-
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>kurenaif</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --navy: #1f2948;
+      --burgundy: #7a1f30;
+      --black: #121018;
+      --gold: #c7a66b;
+      --bg: #05060a;
+      --muted: #8f93aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+        "Noto Sans JP", sans-serif;
+      background:
+        radial-gradient(circle at top, #2b3257 0, transparent 55%),
+        radial-gradient(circle at bottom, #111421 0, var(--bg) 65%);
+      color: #fdfdff;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(4, 5, 10, 0.78);
+      border-bottom: 1px solid rgba(199, 166, 107, 0.3);
+    }
+
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0.6rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      position: relative;
+    }
+    .brand-icon::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 1px solid rgba(199, 166, 107, 0.8);
+    }
+
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      gap: 0.7rem;
+      font-size: 0.85rem;
+    }
+
+    nav a {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      color: #e9ecff;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      background: rgba(122, 31, 48, 0.9);
+      outline: none;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 1.6rem 1.4rem 3rem;
+    }
+
+    section {
+      margin-bottom: 3.2rem;
+    }
+
+    section:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    /* Hero */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 1.8rem;
+      align-items: center;
+      padding-top: 1.2rem;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.18rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(21, 20, 24, 0.7);
+      border: 1px solid rgba(247, 118, 181, 0.6);
+      margin-bottom: 0.7rem;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f776b5;
+      box-shadow: 0 0 8px rgba(247, 118, 181, 0.8);
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease,
+        box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--burgundy), #e7426f);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 16, 26, 0.8);
+      border-color: rgba(199, 166, 107, 0.5);
+      color: #f9f9ff;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(199, 166, 107, 0.1);
+    }
+
+    .hero-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-right: 0.6rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 260px;
+    }
+
+    .hero-frame {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      border: 1px solid rgba(199, 166, 107, 0.45);
+      background: radial-gradient(circle at top, #394472 0, #1b1f33 55%, #10131e 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+
+    .hero-frame::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 20px;
+      border: 1px dashed rgba(245, 245, 249, 0.1);
+    }
+
+    .hero-image {
+      width: 68%;
+      max-width: 220px;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      overflow: hidden;
+      background: radial-gradient(circle at top, rgba(244, 137, 212, 0.35), transparent 65%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hero-chip-row {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .chip {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .chip.navy { background: var(--navy); }
+    .chip.pink { background: #f489d4; }
+    .chip.burgundy { background: var(--burgundy); }
+    .chip.gold { background: var(--gold); }
+    .chip.black { background: var(--black); }
+
+    /* Social links block */
+
+    .social-links {
+      margin-top: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+    }
+
+    .social-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(10, 12, 20, 0.9);
+    }
+
+    .social-pill span {
+      font-size: 0.9rem;
+    }
+
+    .social-pill:hover {
+      background: rgba(122, 31, 48, 0.95);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    /* Generic text blocks */
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr);
+      gap: 2.4rem;
+    }
+
+    .text-block {
+      font-size: 0.9rem;
+      color: #e7e9ff;
+    }
+
+    .text-block h3 {
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+      color: #fff;
+    }
+
+    .profile-list {
+      list-style: none;
+      font-size: 0.86rem;
+    }
+
+    .profile-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.18rem 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+    }
+
+    .profile-list span:first-child {
+      color: var(--muted);
+    }
+
+    /* CTF achievements */
+
+    .about-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .ctf-list {
+      list-style: none;
+      font-size: 0.86rem;
+    }
+
+    .ctf-item {
+      padding: 0.25rem 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .ctf-item span:first-child {
+      color: #f5f5ff;
+    }
+
+    .ctf-tag {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(122, 31, 48, 0.32);
+      border: 1px solid rgba(199, 166, 107, 0.5);
+    }
+
+    /* Schedule */
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .schedule-card {
+      background: rgba(7, 8, 14, 0.9);
+      border-radius: 18px;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.85rem;
+    }
+
+    .schedule-card h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .schedule-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    /* Outfit section */
+
+    .outfit-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2.4rem;
+    }
+
+    .outfit-block {
+      padding: 1.6rem 1.8rem;
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, rgba(244, 137, 212, 0.08), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(31, 41, 72, 0.6), rgba(5, 6, 10, 0.95));
+      border: 1px solid rgba(199, 166, 107, 0.4);
+    }
+
+    .outfit-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .outfit-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .outfit-tag {
+      font-size: 0.75rem;
+      padding: 0.18rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(199, 166, 107, 0.6);
+      background: rgba(8, 9, 15, 0.9);
+      color: var(--gold);
+    }
+
+    .outfit-body {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 2.2fr);
+      gap: 1.6rem;
+      align-items: flex-start;
+    }
+
+    .outfit-text {
+      font-size: 0.9rem;
+      color: #e7e9ff;
+    }
+
+    .outfit-text p + p {
+      margin-top: 0.6rem;
+    }
+
+    .outfit-images {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .outfit-images figure {
+      margin: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(10, 11, 18, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .outfit-images img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .outfit-images figcaption {
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 0.3rem 0.5rem 0.45rem;
+      text-align: center;
+    }
+
+    /* Links */
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+    }
+
+    .link-pill {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(15, 18, 32, 0.9);
+      color: #e8ecff;
+    }
+
+    .link-pill:hover {
+      background: rgba(122, 31, 48, 0.9);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    footer {
+      border-top: 1px solid rgba(199, 166, 107, 0.3);
+      margin-top: 2.5rem;
+      padding: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+      .hero,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        order: -1;
+      }
+
+      .outfit-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      main {
+        padding-inline: 1rem;
+      }
+
+      .outfit-block {
+        padding: 1.2rem 1.1rem;
+      }
+    }
+  </style>
 </head>
+<body>
+  <main>
+    <!-- Hero -->
+    <section id="hero" class="hero" aria-labelledby="hero-heading">
+      <div class="hero-copy">
+        <h1 id="hero-heading">kurenaif</h1>
+        <p class="hero-sub">
+          CTFのwriteup配信、脆弱性の説明や対策方法など技術に関することを発信するVTuberです。
+          Vimの動画など、セキュリティ以外も配信しています。
+          作問などもしております。
+          お仕事などのご相談はXやdiscordなどからお気軽にご連絡ください。
+        </p>
+        <div class="social-links" aria-label="主要リンク">
+          <a class="social-pill" href="#">
+            <span>▶</span><span>YouTube Channel</span>
+          </a>
+          <a class="social-pill" href="#">
+            <span>𝕏</span><span>X (Twitter)</span>
+          </a>
+        </div>
+        <div class="hero-meta">
+          <span>🔐 Security</span>
+          <span>🚩 CTF</span>
+          <span>🔑 Crypto</span>
+          <span>✒ Vim</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-image">
+          <img src="images/icon.jpg" alt="kurenaif アイコン">
+        </div>
+      </div>
+    </section>
 
-<body class="home">
-  <h3> kurenaif color theme</h3>
+    <!-- About + CTF -->
+        <!-- About + CTF -->
+    <section id="about" aria-labelledby="about-heading">
+      <h2 class="section-title" id="about-heading">About</h2>
+      <div class="about-stack">
+        <article class="text-block">
+          <h3>プロフィール</h3>
+          <ul class="profile-list">
+            <li><span>名前</span><span>kurenaif（くれない / くれないふ）</span></li>
+            <li><span>得意分野</span><span>CTF / Crypto</span></li>
+          </ul>
+        </article>
+        <article class="text-block" id="ctf">
+          <h3>Achievements</h3>
+          <ul class="ctf-list">
+            <li class="ctf-item">
+              <span>SECCON CTF 2021 Finals <a href="https://github.com/SECCON/SECCON2021_online_CTF">(https://github.com/SECCON/SECCON2021_online_CTF)</a></span>
+              <span class="ctf-tag">Author</span>
+            </li>
+            <li class="ctf-item">
+              <span>SECCON CTF 2022 Quals & Finals <a href="https://github.com/SECCON/SECCON2022_final_CTF">(https://github.com/SECCON/SECCON2021_online_CTF)</a></span>
+              <span class="ctf-tag">Author</span>
+            </li>
+            <li class="ctf-item">
+              <span>SECCON CTF 2023 Quals & Finals <a href="https://github.com/SECCON/SECCON2023_final_CTF">(https://github.com/SECCON/SECCON2021_online_CTF)</a></span>
+              <span class="ctf-tag">Author</span>
+            </li>
+            <li class="ctf-item">
+              <span>SECCON CTF 2024 Quals & Finals <a href="https://github.com/SECCON/SECCON13_final_CTF">(https://github.com/SECCON/SECCON2021_online_CTF)</a></span>
+              <span class="ctf-tag">Author</span>
+            </li>
+            <li class="ctf-item">
+              <span> <a href="https://icctokyo2025.nisc.go.jp/">ICC 2025</a></span>
+              <span class="ctf-tag">Author</span>
+            </li>
+          </ul>
+        </article>
+      </div>
+    </section>
 
-<table>
-  <tbody>
-    <tr>
-      <td bgcolor="#C6676A">#C6676A</th>
-      <td bgcolor="#313857">#313857</th>
-      <td bgcolor="#F76D9F">#F76D9F</th>
-      <td bgcolor="#47ACEA">#47ACEA</th>
-      <td bgcolor="#00BE48">#00BE48</th>
-    </tr>
-    <tr>
-      <td bgcolor="#83508D">#83508D</th>
-      <td bgcolor="#8C4F8B">#8C4F8B</th>
-      <td bgcolor="#805192">#805192</th>
-      <td bgcolor="#C95B90">#C95B90</th>
-      <td bgcolor="#D46299">#D46299</th>
-      <td bgcolor="#FF99E0">#FF99E0</th>
-      <td bgcolor="#FF9AFD">#FF9AFD</th>
-    </tr>
-    <tr>
-      <td bgcolor="#9A0521">#9A0521</th>
-      <td bgcolor="#F30024">#F30024</th>
-      <td bgcolor="#FFCCF3">#FFCCF3</th>
-    </tr>
+    <!-- Schedule -->
+    <section id="schedule" aria-labelledby="schedule-heading">
+      <h2 class="section-title" id="schedule-heading">Schedule</h2>
+      <div class="schedule-grid">
 
-    <tr>
-      <td bgcolor="#010311">#010311</th>
-      <td bgcolor="#292F48">#292F48</th>
-      <td bgcolor="#596183">#596183</th>
-    </tr>
-  </tbody>
-</table>
+        <article class="schedule-card">
+          <h3> SECCON CTF 14 Quals</h3>
+          <div class="schedule-meta">
+            <span>2025/12/13 - 2025/12/14</span>
+          </div>
+          <p>SECCON CTFの予選が行われます。今年も作問者として参加予定</p>
+        </article>
+
+        <article class="schedule-card">
+          <h3>魔女のお茶会</h3>
+          <div class="schedule-meta">
+            <span>2月3月くらい?</span>
+            <span>オンサイト</span>
+          </div>
+          <p>視聴者参加型のCTF勉強会。次回はオンサイトの予定です。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Outfits -->
+    <section id="outfit" aria-labelledby="outfit-heading">
+      <h2 class="section-title" id="outfit-heading">Outfits</h2>
+      <div class="outfit-section">
+        <!-- Outfit 1 -->
+        <section class="outfit-block">
+          <header class="outfit-header">
+            <div class="outfit-name">Twinkle Star Costume</div>
+            <div class="outfit-tag">Main Outfit</div>
+          </header>
+          <div class="outfit-body">
+            <div class="outfit-text">
+              <p>
+                Desiner: 山神さやか (https://skeb.jp/@SayakaYmgm) <br>
+                modeler: 082
+              </p>
+              <p>
+                セーラー服モチーフで、鍵や錠前、キラキラした装飾が多めのお気に入り衣装です。
+                かなり昔から使っていますが動きやすいように切れ込みが入っていたり、大きな装飾品もないので使いやすい衣装です。
+                実は暗くなるとキラキラ光ってきれいです。
+              </p>
+            </div>
+            <div class="outfit-images">
+              <figure>
+                <img src="images/kurenaif_outfit1_front.png" alt="メイン衣装 正面">
+                <figcaption>Front</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit1_side.png" alt="メイン衣装 側面">
+                <figcaption>Side</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit1_back.png" alt="メイン衣装 背面">
+                <figcaption>Back</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Outfit 2 -->
+        <section class="outfit-block">
+          <header class="outfit-header">
+            <div class="outfit-name">Fromal Crypto Witch Costume</div>
+            <div class="outfit-tag">Witch Outfit</div>
+          </header>
+          <div class="outfit-body">
+            <div class="outfit-text">
+              <p>
+                Desiner: 祝く月(https://skeb.jp/@x_xtsukix_x) <br>
+                modeler: 082
+              </p>
+              <p>
+                フォーマルで伝統的な魔女っぽい衣装です。普段は帽子は外して配信をしています。
+                式典などではこういった服を使っています。
+                この服も可愛くて好きなので、普段使いしています。
+              </p>
+            </div>
+            <div class="outfit-images">
+              <figure>
+                <img src="images/kurenaif_outfit2_front.png" alt="サブ衣装 正面">
+                <figcaption>Front</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit2_side.png" alt="サブ衣装 側面">
+                <figcaption>Side</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit2_back.png" alt="サブ衣装 背面">
+                <figcaption>Back</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Outfit 3 -->
+        <section class="outfit-block">
+          <header class="outfit-header">
+            <div class="outfit-name">Scholer Costume</div>
+            <div class="outfit-tag">Educational Outfit</div>
+          </header>
+          <div class="outfit-body">
+            <div class="outfit-text">
+              <p>
+                Desiner: ごろく (https://skeb.jp/@goroku_jp2) <br>
+                modeler: 082
+              </p>
+              <p>
+                経験年数も増えて、学者っぽい服も作っていただきました。
+                袖は動くとひらひらで、透けていて羽みたいできれいです。
+                魔女なので、髪色はある程度操れます。この服を着るときはちょっと薄くなります。
+                この髪色のkurenaifも当然kurenaifです。
+              </p>
+            </div>
+            <div class="outfit-images">
+              <figure>
+                <img src="images/kurenaif_outfit3_front.png" alt="ガラドレス 正面">
+                <figcaption>Front</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit3_side.png" alt="ガラドレス 側面">
+                <figcaption>Side</figcaption>
+              </figure>
+              <figure>
+                <img src="images/kurenaif_outfit3_back.png" alt="ガラドレス 背面">
+                <figcaption>Back</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Links -->
+    <section id="links" aria-labelledby="links-heading">
+      <h2 class="section-title" id="links-heading">Links</h2>
+      <div class="link-row">
+        <a class="link-pill" href="https://www.youtube.com/c/kurenaif">YouTube Channel</a>
+        <a class="link-pill" href="https://x.com/fwarashi">X (Twitter)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© kurenaif / Arcane Sailor Witch. All rights reserved.</div>
+  </footer>
 </body>
 </html>
