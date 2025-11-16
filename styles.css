@@ -376,10 +376,12 @@ section:last-of-type {
   border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.8rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.ctf-item span:first-child {
+.ctf-title {
   color: #f5f5ff;
 }
 
@@ -389,6 +391,28 @@ section:last-of-type {
   border-radius: 999px;
   background: rgba(122, 31, 48, 0.32);
   border: 1px solid rgba(199, 166, 107, 0.5);
+}
+
+.ctf-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ctf-link-badge {
+  font-size: 0.73rem;
+  padding: 0.08rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(11, 13, 22, 0.85);
+  color: #e8ecff;
+}
+
+.ctf-link-badge:hover,
+.ctf-link-badge:focus-visible {
+  background: rgba(122, 31, 48, 0.9);
+  border-color: rgba(255, 255, 255, 0.32);
+  outline: none;
 }
 
 /* Schedule */
@@ -418,6 +442,62 @@ section:last-of-type {
   font-size: 0.78rem;
   color: var(--muted);
   margin-bottom: 0.35rem;
+}
+
+/* Featured video */
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+
+.video-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+  gap: 1.4rem;
+  align-items: center;
+  padding: 1.4rem 1.6rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(11, 12, 20, 0.92);
+}
+
+.video-text {
+  font-size: 0.9rem;
+  color: #e7e9ff;
+}
+
+.video-text h3 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  color: #fff;
+}
+
+.video-text p {
+  color: var(--muted);
+}
+
+.video-grid .video-card {
+  grid-template-columns: 1fr;
+}
+
+.video-embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #05060a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* Outfit section */
@@ -544,6 +624,11 @@ footer {
 
   .hero-visual {
     order: -1;
+  }
+
+  .video-card {
+    grid-template-columns: 1fr;
+    padding: 1.2rem;
   }
 
   .outfit-body {
