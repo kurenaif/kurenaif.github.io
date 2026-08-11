@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TeX 数式を透過画像として書き出すエディター" />
+    <title>Math Export</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <script>
+      window.MathJax = {
+        startup: { typeset: false },
+        svg: { fontCache: 'none' }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"></script>
+    <style>
+      :root {
+        --ink: #111111;
+        --paper: #f5f4f0;
+        --panel: rgba(255, 255, 255, .78);
+        --line: #deddd8;
+        --muted: #777772;
+        --accent: #2453dc;
+        --preview-grid: #e3e3df;
+        --radius: 22px;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      }
+      button, textarea, input { font: inherit; }
+      button { cursor: pointer; }
+      .app { max-width: 1180px; margin: 0 auto; padding: 28px 22px 48px; }
+      .workspace { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); gap: 18px; }
+      .card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 10px 28px rgba(31, 31, 27, .04); }
+      .editor-head, .preview-head { display: flex; align-items: center; justify-content: space-between; padding: 17px 18px; border-bottom: 1px solid var(--line); }
+      .label { font-size: 12px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+      .hint { color: var(--muted); font-size: 12px; }
+      textarea { display: block; width: 100%; min-height: 290px; resize: vertical; border: 0; outline: 0; padding: 22px; color: #20201e; background: transparent; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 15px; line-height: 1.75; }
+      .examples { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 18px 18px; }
+      .chip { border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; color: #53534f; background: #fff; font-size: 12px; transition: .18s ease; }
+      .chip:hover { border-color: #b8b8b2; color: var(--ink); }
+      .preview-stage { position: relative; display: grid; min-height: 290px; place-items: center; overflow: auto; padding: 45px 28px; background-color: #f9f9f7; background-image: linear-gradient(45deg, var(--preview-grid) 25%, transparent 25%), linear-gradient(-45deg, var(--preview-grid) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--preview-grid) 75%), linear-gradient(-45deg, transparent 75%, var(--preview-grid) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; }
+      #formula { max-width: 100%; color: #111; font-size: 42px; text-align: center; overflow-wrap: anywhere; }
+      #formula > svg { display: block; max-width: 100%; height: auto; }
+      .error { max-width: 100%; color: #b12424; font: 13px/1.6 "SFMono-Regular", Consolas, monospace; white-space: pre-wrap; }
+      .controls { padding: 19px 18px 20px; border-top: 1px solid var(--line); }
+      .control-label { display: block; margin-bottom: 10px; color: var(--muted); font-size: 12px; }
+      .presets { display: flex; gap: 8px; }
+      .color-preset { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 34px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: #111; font-weight: 750; font-size: 12px; }
+      .color-preset.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .color-preset.white { color: white; background: #111; }
+      .color-row { display: flex; gap: 11px; align-items: center; margin-top: 15px; }
+      input[type="color"] { width: 38px; height: 34px; padding: 2px; border: 1px solid var(--line); border-radius: 9px; background: #fff; cursor: pointer; }
+      .color-value { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; color: #5c5c57; background: white; font: 12px "SFMono-Regular", Consolas, monospace; }
+      .download { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 21px; }
+      .button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 45px; border: 1px solid var(--ink); border-radius: 12px; color: white; background: var(--ink); font-size: 14px; font-weight: 700; transition: transform .18s, opacity .18s; }
+      .button:hover { transform: translateY(-1px); }
+      .button.secondary { color: var(--ink); background: white; }
+      .note { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+      @media (max-width: 760px) { .app { padding: 20px 14px 34px; } .workspace { grid-template-columns: 1fr; } textarea, .preview-stage { min-height: 245px; } }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="workspace" aria-label="数式エディター">
+        <div class="card">
+          <div class="editor-head"><span class="label">LaTeX input</span><span class="hint">$ は不要です</span></div>
+          <textarea id="latex-input" aria-label="TeX 数式入力">\displaystyle \int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}</textarea>
+          <div class="examples" aria-label="サンプル数式">
+            <button class="chip" data-formula="E = mc^2">相対性理論</button>
+            <button class="chip" data-formula="\frac{-b \pm \sqrt{b^2-4ac}}{2a}">二次方程式</button>
+            <button class="chip" data-formula="\sum_{k=1}^{n} k = \frac{n(n+1)}{2}">総和</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="preview-head"><span class="label">Preview</span><span class="hint">背景は透過です</span></div>
+          <div class="preview-stage"><div id="formula" aria-live="polite"></div></div>
+          <div class="controls">
+            <span class="control-label">数式の色</span>
+            <div class="presets">
+              <button class="color-preset active" data-color="#111111" aria-label="黒">黒</button>
+              <button class="color-preset white" data-color="#ffffff" aria-label="白">白</button>
+              <button class="color-preset" data-color="#2453dc" aria-label="青" style="color:#2453dc">青</button>
+              <button class="color-preset" data-color="#c7432e" aria-label="赤" style="color:#c7432e">赤</button>
+            </div>
+            <div class="color-row"><input id="color-picker" type="color" value="#111111" aria-label="カスタムカラー" /><output class="color-value" id="color-value">#111111</output></div>
+            <div class="download">
+              <button class="button" id="download-png">↓ PNG を保存</button>
+              <button class="button secondary" id="download-svg">↓ SVG を保存</button>
+            </div>
+            <p class="note">書き出し画像は透明背景です。白い数式は暗い背景の上でご利用ください。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const input = document.getElementById('latex-input');
+      const formula = document.getElementById('formula');
+      const picker = document.getElementById('color-picker');
+      const colorValue = document.getElementById('color-value');
+      let formulaColor = picker.value;
+      let timer;
+      let renderVersion = 0;
+
+      async function render() {
+        const version = ++renderVersion;
+        try {
+          if (!window.MathJax?.tex2svgPromise) return;
+          const node = await MathJax.tex2svgPromise(input.value.trim() || '\\text{ }', { display: true });
+          if (version !== renderVersion) return;
+          const svg = node.querySelector('svg');
+          if (!svg) throw new Error('SVG を生成できませんでした。');
+          formula.replaceChildren(svg.cloneNode(true));
+          formula.style.color = formulaColor;
+        } catch (error) {
+          if (version !== renderVersion) return;
+          formula.replaceChildren();
+          const message = document.createElement('div');
+          message.className = 'error';
+          message.textContent = 'TeX の記法を確認してください。\n' + error.message;
+          formula.append(message);
+        }
+      }
+      function queueRender() { clearTimeout(timer); timer = setTimeout(render, 120); }
+      function setColor(color) {
+        formulaColor = color;
+        picker.value = color;
+        colorValue.value = color.toUpperCase();
+        document.querySelectorAll('.color-preset').forEach((button) => button.classList.toggle('active', button.dataset.color === color));
+        formula.style.color = color;
+      }
+      function renderedSvg() {
+        const source = formula.querySelector('svg');
+        if (!source) throw new Error('SVG を生成できませんでした。');
+        const svg = source.cloneNode(true);
+        const box = source.getBoundingClientRect();
+        const width = Math.ceil(box.width);
+        const height = Math.ceil(box.height);
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.style.color = formulaColor;
+        return new XMLSerializer().serializeToString(svg);
+      }
+      function download(blob, filename) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      }
+      input.addEventListener('input', queueRender);
+      picker.addEventListener('input', (event) => setColor(event.target.value));
+      document.querySelectorAll('.color-preset').forEach((button) => button.addEventListener('click', () => setColor(button.dataset.color)));
+      document.querySelectorAll('.chip').forEach((button) => button.addEventListener('click', () => { input.value = button.dataset.formula; render(); input.focus(); }));
+      document.getElementById('download-svg').addEventListener('click', async () => {
+        try { await render(); download(new Blob([renderedSvg()], { type: 'image/svg+xml;charset=utf-8' }), 'math-formula.svg'); }
+        catch (error) { alert(error.message); }
+      });
+      document.getElementById('download-png').addEventListener('click', async () => {
+        try {
+          await render();
+          const svg = renderedSvg();
+          const image = new Image();
+          const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
+          image.onload = () => {
+            const scale = 3;
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width * scale;
+            canvas.height = image.height * scale;
+            const context = canvas.getContext('2d');
+            context.scale(scale, scale);
+            context.drawImage(image, 0, 0);
+            canvas.toBlob((blob) => { if (blob) download(blob, 'math-formula.png'); URL.revokeObjectURL(url); }, 'image/png');
+          };
+          image.onerror = () => { URL.revokeObjectURL(url); alert('PNG の生成に失敗しました。'); };
+          image.src = url;
+        } catch (error) { alert(error.message); }
+      });
+      window.addEventListener('load', render);
+    </script>
+  </body>
+</html>
