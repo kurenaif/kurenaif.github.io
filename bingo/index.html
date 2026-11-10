@@ -9,6 +9,9 @@
 * { box-sizing:border-box; }
 body { margin:0; background:#eee; color:#222; font-family:system-ui,-apple-system,"Hiragino Sans",Meiryo,sans-serif; }
 .toolbar { max-width:1100px; margin:0 auto; padding:18px 20px; display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.author-links { width:100%; display:flex; flex-wrap:wrap; gap:4px 16px; font-size:13px; }
+.author-links a { color:#555; padding:4px 0; text-underline-offset:3px; }
+.author-links a:hover { color:#111; }
 .toolbar p { font-size:14px; margin:0 auto 0 0; line-height:1.7; }
 button { border:1px solid #777; border-radius:4px; background:white; color:#222; padding:10px 16px; font:inherit; font-size:14px; cursor:pointer; }
 button.primary { background:#222; color:#fff; border-color:#222; }
@@ -22,6 +25,10 @@ main { width:min(1100px,100%); margin:0 auto 24px; background:white; }
 </head>
 <body>
 <div class="toolbar">
+  <nav class="author-links" aria-label="kurenaifのSNS">
+    <a href="https://x.com/fwarashi" target="_blank" rel="noopener noreferrer">X @fwarashi</a>
+    <a href="https://www.youtube.com/c/kurenaif" target="_blank" rel="noopener noreferrer">YouTube kurenaif</a>
+  </nav>
   <p>マスを押すと○が付きます。PNG画像を保存してXに投稿できます。</p>
   <button class="primary" id="download" type="button">PNG画像を保存</button>
   <button id="reset" type="button">○をリセット</button>
